@@ -1,0 +1,71 @@
+service: lambda-wm
+
+frameworkVersion: '2 || 3'
+
+plugins:
+#  - serverless-aws-documentation
+   - serverless-reqvalidator-plugin
+  
+
+
+provider:
+  name: aws
+  runtime: python3.8
+  # lambdaHashingVersion: 20201221
+  region: ap-southeast-2
+  stage: ${opt:stage, 'dev'}
+
+# functions:
+#   hello:
+#     handler: handler.hello
+#     events:
+#       - http:
+#           method: GET 
+#           path: /auth
+#           authorizer: ${self:custom.authorizer}
+
+functions:
+  hello:
+    handler: handler.hello
+    events:
+      - http:
+          method: GET
+          path: /autho
+          integration: lambda
+          reqValidatorName: validator
+          request:
+            passThrough: NEVER
+            parameters:
+              querystrings:
+                userid: true
+                activityid: true
+            template:
+              application/json: '{ "userid":"$input.params(''userid'')","activityid":"$input.params(''activityid'')"}'
+          response:
+            headers:
+              Content-Type: "'application/json'"
+            template: $input.path('$')
+            statusCodes: 
+                200:
+                  pattern: ''
+                500:
+                  pattern: '.*\[InternalServerError\].*'
+                  template: $input.path("$.errorMessage")
+                  headers:
+                    Content-Type: "'application/json'"
+
+
+resources:
+  Resources:
+    validator:
+      Type: AWS::ApiGateway::RequestValidator
+      Properties:
+        Name: 'my-req-validator'
+        RestApiId: 
+          Ref: ApiGatewayRestApi
+        ValidateRequestBody: false
+        ValidateRequestParameters: true
+        
+
+# custom:
+  # authorizer: arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:auth-service-${self:provider.stage}-auth
