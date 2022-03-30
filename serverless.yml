@@ -30,17 +30,25 @@ functions:
     events:
       - http:
           method: GET
-          path: /autho
+          path: /autho/{id}
           integration: lambda
           reqValidatorName: validator
           request:
             passThrough: NEVER
             parameters:
+              paths:
+                id: true
               querystrings:
-                userid: true
-                activityid: true
+                start_date: true
+                end_date: true
+                container_type: true
+                volume: true
+                quantity: true
+
+                # userid: true
+                # activityid: true
             template:
-              application/json: '{ "userid":"$input.params(''userid'')","activityid":"$input.params(''activityid'')"}'
+              application/json: '{ "id":"$input.params(''id'')","start_date":"$input.params(''start_date'')","end_date":"$input.params(''end_date'')","container_type":"$input.params(''container_type'')","volume":"$input.params(''volume'')","quantity":"$input.params(''quantity'')"}'
           response:
             headers:
               Content-Type: "'application/json'"
