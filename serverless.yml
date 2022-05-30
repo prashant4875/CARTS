@@ -1,6 +1,6 @@
 service: lambda-wm
 
-frameworkVersion: '2 || 3'
+frameworkVersion: '2 || 4'
 
 plugins:
 #  - serverless-aws-documentation
