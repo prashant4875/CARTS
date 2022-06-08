@@ -33,7 +33,7 @@ stage ('Generate Version for RELEASE'){
 stage('File exists'){
     steps{
         script{
-            if(fileExists('serverless.yml')){
+            if(fileExists('serverless1.yml')){
                 echo 'Yes the file exists'
             }
             else{
