@@ -30,6 +30,18 @@ stage ('Generate Version for RELEASE'){
              }
              }
              }	
+stage('File exists'){
+    steps{
+        script{
+            if(fileExists('serverless.yml')){
+                echo 'Yes the file exists'
+            }
+            else{
+                echo 'No file exits in this repo'
+            }
+        }
+    }
+}
 // stage ('Git tag'){
 //     steps{
 //         withCredentials([gitUsernamePassword(credentialsId: 'git-access', gitToolName: 'Default')]) {
